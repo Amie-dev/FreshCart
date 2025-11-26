@@ -1,16 +1,17 @@
-import bcrypt from "bcryptjs";
+
 import mongoose, { Schema, Document } from "mongoose";
 
 type UserRole = "user" | "deliveryBoy" | "admin";
-
+type UserProvider="credentials"| "google"
 interface IUser extends Document {
-  _id:mongoose.Types.ObjectId
+  _id: mongoose.Types.ObjectId;
   name: string;
   password?: string;
   email: string;
-  mobile: string;
+  mobile?: string;
   role: UserRole;
-            image?: string;
+  provider:UserProvider
+  image?: string;
 
   createdAt: Date;
   updatedAt: Date;
@@ -24,9 +25,13 @@ const userSchema = new Schema<IUser>(
       required: true,
     },
     password: {
-      type: String,
-      required: true,
-    },
+  type: String,
+  required: function () {
+    // Only require password if provider is credentials
+    return this.provider === "credentials";
+  },
+},
+
     email: {
       type: String,
       unique: true,
@@ -35,7 +40,7 @@ const userSchema = new Schema<IUser>(
     },
     mobile: {
       type: String,
-      required: true,
+      // required: true,
       index: true,
     },
     role: {
@@ -43,37 +48,23 @@ const userSchema = new Schema<IUser>(
       enum: ["user", "deliveryBoy", "admin"],
       default: "user",
     },
-    image:{
-      type:String
-    }
+    provider: {
+  type: String,
+  enum: ["credentials", "google"],
+  default: "credentials",
+},
+    image: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
 
-// userSchema.pre<IUser>("save", async function (next) {
-//   if (!this.isModified("password")) return next();
-//   try {
-//     this.password = await bcrypt.hash(this.password!, 10);
-//     next();
-//   } catch (error) {
-//     next(error as Error);
-//   }
-// });
 
-userSchema.methods.comparePassword = async function (
-  candidatePassword: string
-): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password!);
-};
 
 const User = mongoose.models.User ?? mongoose.model<IUser>("User", userSchema);
 
-
-
-
 export default User;
-
-
 
 /*
 
@@ -88,3 +79,19 @@ const choice2 = snack1 ?? snack2; // "" (because "" is not null/undefined)
 
 
 */
+
+// userSchema.pre<IUser>("save", async function (next) {
+//   if (!this.isModified("password")) return next();
+//   try {
+//     this.password = await bcrypt.hash(this.password!, 10);
+//     next();
+//   } catch (error) {
+//     next(error as Error);
+//   }
+// });
+
+// userSchema.methods.comparePassword = async function (
+//   candidatePassword: string
+// ): Promise<boolean> {
+//   return bcrypt.compare(candidatePassword, this.password!);
+// };
