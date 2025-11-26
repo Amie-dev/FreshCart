@@ -5,10 +5,10 @@ import bcrypt from "bcryptjs";
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password, mobile } = await request.json();
+    const { name, email, password, } = await request.json();
 
     // Basic validation
-    if (!name || !email || !password || !mobile) {
+    if (!name || !email || !password ) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
@@ -16,9 +16,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Password must be at least 6 characters" }, { status: 400 });
     }
 
-    if (mobile.length !== 10) {
-      return NextResponse.json({ error: "Mobile number must be 10 digits" }, { status: 400 });
-    }
+    // if (mobile.length !== 10) {
+    //   return NextResponse.json({ error: "Mobile number must be 10 digits" }, { status: 400 });
+    // }
 
     await connectDB();
 
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       name,
       email,
       password: hashedPassword,
-      mobile,
+      // mobile,
     });
 
     return NextResponse.json(
