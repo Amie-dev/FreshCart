@@ -1,39 +1,57 @@
-"use client"
+"use client";
 
-import { ArrowLeft, EyeIcon, EyeOff, Leaf, Lock, Mail, User } from 'lucide-react'
-import React, { useState } from 'react'
-import { motion } from "motion/react"
-import { useRouter } from "next/navigation"
-import { signIn } from "next-auth/react"
+import {
+  ArrowLeft,
+  EyeIcon,
+  EyeOff,
+  Leaf,
+  Lock,
+  Mail,
+  User,
+} from "lucide-react";
+import React, { useState } from "react";
+import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
-import axios from 'axios'
+import axios from "axios";
 
 type propType = {
-  previousStep: (s: number) => void
-}
+  previousStep: (s: number) => void;
+};
 
 function RegisterForm({ previousStep }: propType) {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loadingGoogle, setLoadingGoogle] = useState(false); // NEW
 
-  const formValid = name.trim() !== "" && email.trim() !== "" && password.trim() !== "";
+  const formValid =
+    name.trim() !== "" && email.trim() !== "" && password.trim() !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formValid) return;
 
     try {
-      const response = await axios.post("/api/auth/register", { name, email, password });
+      const response = await axios.post("/api/auth/register", {
+        name,
+        email,
+        password,
+      });
       console.log(response.data.message || "Registration successful");
-      setName(""); setEmail(""); setPassword("");
+      setName("");
+      setEmail("");
+      setPassword("");
       router.push("/login");
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.error(error.response?.data?.error || "Registration failed. Please try again.");
+        console.error(
+          error.response?.data?.error ||
+            "Registration failed. Please try again."
+        );
       } else {
         console.error("Unexpected error occurred");
       }
@@ -47,7 +65,8 @@ function RegisterForm({ previousStep }: propType) {
         className="absolute top-6 left-6 flex items-center gap-2 text-green-500 hover:text-green-700 transition-colors cursor-pointer"
         onClick={() => previousStep(1)}
       >
-        <ArrowLeft className="w-5 h-5" /><span>Back</span>
+        <ArrowLeft className="w-5 h-5" />
+        <span>Back</span>
       </div>
 
       {/* Title */}
@@ -124,7 +143,11 @@ function RegisterForm({ previousStep }: propType) {
           type="submit"
           disabled={!formValid}
           className={`py-2 rounded font-semibold transition-colors 
-            ${formValid ? "bg-green-600 text-white hover:bg-green-700" : "bg-gray-300 text-gray-500 cursor-not-allowed"}
+            ${
+              formValid
+                ? "bg-green-600 text-white hover:bg-green-700"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }
           `}
         >
           Register
@@ -158,14 +181,18 @@ function RegisterForm({ previousStep }: propType) {
           setLoadingGoogle(false); // optional, if you want to re-enable after redirect
         }}
         className={`w-full max-w-sm flex items-center justify-center gap-2 py-2 rounded-lg border border-gray-700 font-medium transition-colors
-          ${loadingGoogle ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-white text-gray-900 hover:bg-gray-100"}
+          ${
+            loadingGoogle
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-white text-gray-900 hover:bg-gray-100"
+          }
         `}
       >
         <FcGoogle className="text-xl" />
         <span>{loadingGoogle ? "Signing in..." : "Sign up with Google"}</span>
       </button>
     </div>
-  )
+  );
 }
 
-export default RegisterForm
+export default RegisterForm;
