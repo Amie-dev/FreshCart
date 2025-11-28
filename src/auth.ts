@@ -4,9 +4,9 @@ import Google from "next-auth/providers/google";
 import connectDB from "./lib/db";
 import User from "./model/user.model";
 import bcrypt from "bcryptjs";
-import type { NextAuthOptions } from "next-auth";
+// import type { NextAuthOptions } from "next-auth";
 
-export const authOptions: NextAuthOptions = {
+export const { handlers, signIn, signOut, auth } =NextAuth( {
   providers: [
     Credentials({
       id: "credentials",
@@ -112,4 +112,5 @@ export const authOptions: NextAuthOptions = {
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-};
+}
+);

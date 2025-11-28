@@ -15,6 +15,8 @@ export async function proxy(request: NextRequest) {
     "/"
   ]
 
+  const publicApiRouter=["/api/auth","/api/user","/api/"]
+
 //   console.log(request.nextUrl.clone())
 
   // Try to retrieve the JWT token from the request using NextAuth
