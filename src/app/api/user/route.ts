@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import connectDB from "@/lib/db";
 import User from "@/model/user.model";
 import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -25,8 +26,8 @@ export async function PATCH(request: NextRequest) {
     if (role) update.role = role;
     update.mobile = mobile;
 
-    const user = await User.findOneAndUpdate(
-      { _id: session.user._id },
+    const user = await User.findByIdAndUpdate(
+      { _id:new mongoose.Types.ObjectId(session.user._id) },
       { $set: update },
       { new: true, runValidators: true }
     );

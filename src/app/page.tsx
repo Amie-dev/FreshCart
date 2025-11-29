@@ -4,7 +4,8 @@ import EditRoleMobile from "@/components/EditRoleMobile";
 import Header from "@/components/Header"; // fixed typo: Herder -> Header
 import User from "@/model/user.model";
 import { redirect } from "next/navigation";
-
+import mongoose from "mongoose";
+import connectDB from "@/lib/db";
 export default async function HomePage() {
   // Get the session on the server
   const session = await auth();
@@ -13,8 +14,9 @@ export default async function HomePage() {
   if (!session?.user?._id) {
     redirect("/login");
   }
+  await connectDB()
 
-  const user = await User.findById(session.user._id);
+  const user = await User.findById(new mongoose.Types.ObjectId(session.user._id));
   if (!user) {
     redirect("/login");
   }
