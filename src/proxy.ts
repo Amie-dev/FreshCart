@@ -9,10 +9,10 @@ export async function proxy(request: NextRequest) {
   const publicRoutes = [
     "/login",
     "/register",
-    "/api/auth",   // NextAuth API routes
+    "/api/auth",     // NextAuth API routes
     "/favicon.ico",
-    "/_next",       // Next.js static files and assets
-    "/"
+    "/_next",        // Next.js static files and assets
+    // "/"              // this give alawys true for every router which is start with "/" so that every router is publice // any router or route start with / this time always true
   ]
 
   const publicApiRouter=["/api/auth","/api/user","/api/"]
@@ -52,3 +52,69 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }
+
+
+/*
+import { getToken } from 'next-auth/jwt'
+import { NextResponse, NextRequest } from 'next/server'
+
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // PUBLIC PAGES (accessible only when logged OUT)
+  const publicRoutes = [
+    "/login",
+    "/register",
+  ]
+
+  // ALWAYS PUBLIC static files
+  const staticRoutes = [
+    "/favicon.ico",
+    "/_next",
+  ]
+
+  // PUBLIC API routes
+  const publicApiRoutes = [
+    "/api/auth",
+  ]
+
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
+
+  // 1. Logged-in users cannot access login/register
+  if (token && publicRoutes.includes(pathname)) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/"
+    return NextResponse.redirect(url)
+  }
+
+  // 2. Static resources allowed
+  if (staticRoutes.some(path => pathname.startsWith(path))) {
+    return NextResponse.next()
+  }
+
+  // 3. Public API allowed
+  if (publicApiRoutes.some(path => pathname.startsWith(path))) {
+    return NextResponse.next()
+  }
+
+  // 4. Public pages allowed only for logged OUT
+  if (publicRoutes.includes(pathname) && !token) {
+    return NextResponse.next()
+  }
+
+  // 5. If no token → redirect user to login
+  if (!token) {
+    const loginUrl = new URL("/login", request.url)
+    loginUrl.searchParams.set("callbackUrl", request.url)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // 6. User authenticated → allow access
+  return NextResponse.next()
+}
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+}
+
+*/
