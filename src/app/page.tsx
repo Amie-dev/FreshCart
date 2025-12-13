@@ -1,5 +1,5 @@
 // app/page.tsx
-import { auth } from "@/auth"; 
+import { auth } from "@/auth";
 import EditRoleMobile from "@/components/EditRoleMobile";
 import Header from "@/components/Header";
 import User from "@/model/user.model";
@@ -7,6 +7,10 @@ import { redirect } from "next/navigation";
 import mongoose from "mongoose";
 import connectDB from "@/lib/db";
 import Nav from "@/components/Nav";
+import UserDashboard from "@/components/UserDashboard";
+import DeliveryBoyDashboard from "@/components/DeliveryBoyDashboard";
+import AdminDashboard from "@/components/AdminDashboard";
+import { JSX } from "react";
 
 export default async function HomePage() {
   // Get the session on the server
@@ -40,11 +44,18 @@ export default async function HomePage() {
   if (isIncomplete) {
     return <EditRoleMobile />;
   }
+  const dashboards: Record<string, JSX.Element> = {
+    admin: <AdminDashboard />,
+    deliveryBoy: <DeliveryBoyDashboard />,
+    user: <UserDashboard />,
+  };
 
   return (
     <>
       {/* <Header /> */}
+
       <Nav user={user} />
+      {dashboards[user.role] ?? <UserDashboard />}
     </>
   );
 }
