@@ -17,7 +17,7 @@ export const { handlers, signIn, signOut, auth } =NextAuth( {
       },
       async authorize(credentials): Promise<any> {
 
-        console.log(credentials)
+        // console.log(credentials)
         await connectDB();
 
         const user = await User.findOne({
