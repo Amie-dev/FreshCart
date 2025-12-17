@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 
 function HeroSections() {
   const slides = [
